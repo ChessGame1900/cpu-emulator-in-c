@@ -127,40 +127,55 @@ int binary(char binaryString[]) {
     }
     return decimalValue;
 }
-
 typedef struct {
     char name[50];
     int value;
 } Variable;
 
-int functions() {
-    char str[100];
-    char *main;
-    printf("Please write limit for string word count: ");
-    int x;
-    scanf("%d", &x);
-    getchar(); 
-    char *word[x]; 
+int variable(char *word[], int wordCount, char *type) {
     int i = 0;
-    printf("Enter a string: ");
-    scanf("%99[^\n]", str);
-    main = strtok(str, " ");
-    while (main != NULL && i < x) {
-        word[i] = main; 
-        i++;
-        main = strtok(NULL, " ");
-    }
-
-    if (i >= 4 && strcmp(word[0], "int") == 0 && atoi(word[2]) > 0 &&
+    if (wordCount >= 4 && strcmp(word[0], type) == 0 && atoi(word[2]) >= 0 &&
         (strcmp(word[3], "register1") == 0 || strcmp(word[3], "0x0001") == 0 ||
          strcmp(word[3], "register2") == 0 || strcmp(word[3], "0x0002") == 0 ||
          strcmp(word[3], "register3") == 0 || strcmp(word[3], "0x0003") == 0)) {
         Variable var;
-        strcpy(var.name, word[1]); 
+        strcpy(var.name, word[1]);
         var.value = atoi(word[2]);
-    } else {
-        printf("Invalid input string.\n");
+        printf("Variable: %s = %d\n", var.name, var.value); 
+        return 1; 
     }
+    return 0; 
+}
 
+int functions() {
+    char str[100];
+    char *token;
+    printf("Please write limit for string word count: ");
+    int x;
+    scanf("%d", &x);
+    getchar(); 
+    char **word = malloc(x * sizeof(char *)); 
+    if (word == NULL) {
+        printf("Memory allocation failed!\n");
+        return 1; 
+    }
+    int i = 0;
+    printf("Enter a string: ");
+    scanf("%99[^\n]", str);
+    token = strtok(str, " ");
+    while (token != NULL && i < x) {
+        word[i] = token;
+        i++;
+        token = strtok(NULL, " ");
+    }
+    int c;
+    for (c = 2; c <= 4; c++) { 
+        switch (c) {
+            case 2: variable(word, i, "int"); break;
+            case 3: variable(word, i, "bool"); break;
+            case 4: variable(word, i, "string"); break;
+        }
+    }
+    free(word); 
     return 0;
 }
