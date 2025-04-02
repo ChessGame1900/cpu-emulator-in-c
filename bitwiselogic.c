@@ -8,28 +8,18 @@ struct registers {
     int register1;
     int register2;
     int register3;
+    char str1[50];
+    char str2[50];
+    char str3[50];
 };
 
 int performOperation(struct registers A, int operation);
 void printResult(int result, int operation);
 void printDisplay(int result, int operation);
 int binary(char binaryString[]);
-
-int getRegisterValue() {
-    char input[33];
-    printf("Enter register value (binary or decimal): \n");
-    scanf("%s", input);
-
-    int isBinary = 1;
-    for (int i = 0; input[i] != '\0'; i++) {
-        if (input[i] != '0' && input[i] != '1') {
-            isBinary = 0;
-            break;
-        }
-    }
-
-    return isBinary ? binary(input) : atoi(input);
-}
+int getRegisterValue();
+void variable(char *word[], int wordCount, const char *type, struct registers *reg);
+void functions(struct registers *reg);
 
 int main(void) {
     int operation;
@@ -52,6 +42,23 @@ int main(void) {
 
     return 0;
 }
+
+int getRegisterValue() {
+    char input[33];
+    printf("Enter register value (binary or decimal): \n");
+    scanf("%s", input);
+
+    int isBinary = 1;
+    for (int i = 0; input[i] != '\0'; i++) {
+        if (input[i] != '0' && input[i] != '1') {
+            isBinary = 0;
+            break;
+        }
+    }
+
+    return isBinary ? binary(input) : atoi(input);
+}
+
 int performOperation(struct registers A, int operation) {
     int result = 0;
     switch (operation) {
@@ -62,6 +69,7 @@ int performOperation(struct registers A, int operation) {
     }
     return result;
 }
+
 void printResult(int result, int operation) {
     switch (operation) {
         case 1: printf("Result of AND: %d\n", result); break;
@@ -70,6 +78,7 @@ void printResult(int result, int operation) {
         case 4: printf("Result of NOR: %d\n", result); break;
     }
 }
+
 void printDisplay(int result, int operation) {
     int digits[10];
     int numDigits = 0;
@@ -103,6 +112,7 @@ void printDisplay(int result, int operation) {
         }
     }
 }
+
 int binary(char binaryString[]) {
     int decimalValue = 0;
     int length, i, power;
@@ -113,7 +123,7 @@ int binary(char binaryString[]) {
             decimalValue += (int)pow(2, power);
         }
     }
-    printf("press 0 for negative value, press  1  for positive, press 2 to quit \n");
+    printf("press 0 for negative value, press 1 for positive, press 2 to quit \n");
     int sign;
     scanf("%d", &sign);
     switch (sign) {
@@ -127,37 +137,43 @@ int binary(char binaryString[]) {
     }
     return decimalValue;
 }
-typedef struct {
-    char name[50];
-    int value;
-} Variable;
 
-int variable(char *word[], int wordCount, char *type) {
-    int i = 0;
-    if (wordCount >= 4 && strcmp(word[0], type) == 0 && atoi(word[2]) >= 0 &&
-        (strcmp(word[3], "register1") == 0 || strcmp(word[3], "0x0001") == 0 ||
-         strcmp(word[3], "register2") == 0 || strcmp(word[3], "0x0002") == 0 ||
-         strcmp(word[3], "register3") == 0 || strcmp(word[3], "0x0003") == 0)) {
-        Variable var;
-        strcpy(var.name, word[1]);
-        var.value = atoi(word[2]);
-        printf("Variable: %s = %d\n", var.name, var.value); 
-        return 1; 
+void variable(char *word[], int wordCount, const char *type, struct registers *reg) {
+    if (wordCount >= 3 && atoi(word[2]) >= 0 &&
+        (strcmp(word[0], "register1") == 0 || strcmp(word[0], "0x0001") == 0 ||
+         strcmp(word[0], "register2") == 0 || strcmp(word[0], "0x0002") == 0 ||
+         strcmp(word[0], "register3") == 0 || strcmp(word[0], "0x0003") == 0)) {
+
+        if (strcmp(type, "int") == 0) {
+            if (strcmp(word[0], "register1") == 0 || strcmp(word[0], "0x0001") == 0) {
+                reg->register1 = atoi(word[2]);
+            } else if (strcmp(word[0], "register2") == 0 || strcmp(word[0], "0x0002") == 0) {
+                reg->register2 = atoi(word[2]);
+            } else if (strcmp(word[0], "register3") == 0 || strcmp(word[0], "0x0003") == 0) {
+                reg->register3 = atoi(word[2]);
+            }
+        } else if (strcmp(type, "string") == 0) {
+            if (strcmp(word[0], "register1") == 0 || strcmp(word[0], "0x0001") == 0) {
+                strcpy(reg->str1, word[2]);
+            } else if (strcmp(word[0], "register2") == 0 || strcmp(word[0], "0x0002") == 0) {
+                strcpy(reg->str2, word[2]);
+            } else if (strcmp(word[0], "register3") == 0 || strcmp(word[0], "0x0003") == 0) {
+                strcpy(reg->str3, word[2]);
+            }
+        }
     }
-    return 0; 
 }
-
-int functions() {
+void functions(struct registers *reg) {
     char str[100];
     char *token;
     printf("Please write limit for string word count: ");
     int x;
     scanf("%d", &x);
-    getchar(); 
-    char **word = malloc(x * sizeof(char *)); 
+    getchar();
+    char **word = malloc(x * sizeof(char *));
     if (word == NULL) {
         printf("Memory allocation failed!\n");
-        return 1; 
+        return;
     }
     int i = 0;
     printf("Enter a string: ");
@@ -168,14 +184,12 @@ int functions() {
         i++;
         token = strtok(NULL, " ");
     }
-    int c;
-    for (c = 2; c <= 4; c++) { 
+    for (int c = 2; c <= 4; c++) {
         switch (c) {
-            case 2: variable(word, i, "int"); break;
-            case 3: variable(word, i, "bool"); break;
-            case 4: variable(word, i, "string"); break;
+            case 2: variable(word, i, "int", reg); break;
+            case 3: variable(word, i, "bool", reg); break;
+            case 4: variable(word, i, "string", reg); break;
         }
     }
-    free(word); 
-    return 0;
+    free(word);
 }
