@@ -1,3 +1,5 @@
-for creating varible you need to write: dataType name value register
-(dataType: int, float, bool, string, char), (name: anything, as example x), (value using int: any number including negatives; value using bool: true or false/ 1 or 0; value using strings or char needs to be in 2 quotation marks), (register:
-name or hexadecimal number( as example register1 or 0x0001) )
+for creating varible you need to write: dataType register value 
+(dataType: int, float, bool, string, char), (value using int: any number including negatives; value using bool: true or false/ 1 or 0; value using strings or char needs to be in 2 quotation marks), (register:
+name or hexadecimal number( as example register1 or 0x0001) 
+ printf : printf register
+(register can be expressed as hexadecimal( 0x0001,0x0002,0x0003) or as register's name( register1,register2,register3)
