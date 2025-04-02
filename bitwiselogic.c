@@ -164,6 +164,8 @@ void variable(char *word[], int wordCount, const char *type, struct registers *r
     }
 }
 void functions(struct registers *reg) {
+    FILE *fptr;
+    fptr = fopen("filename.txt", "r");
     char str[100];
     char *token;
     printf("Please write limit for string word count: ");
@@ -175,15 +177,16 @@ void functions(struct registers *reg) {
         printf("Memory allocation failed!\n");
         return;
     }
+    fgets(str, 100, fptr);
     int i = 0;
     printf("Enter a string: ");
-    scanf("%99[^\n]", str);
     token = strtok(str, " ");
     while (token != NULL && i < x) {
         word[i] = token;
         i++;
         token = strtok(NULL, " ");
     }
+    fclose(fptr);
     for (int c = 2; c <= 4; c++) {
         switch (c) {
             case 2: variable(word, i, "int", reg); break;
