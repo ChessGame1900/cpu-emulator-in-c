@@ -5,14 +5,9 @@
 #include <stdlib.h>
 
 struct registers {
-    int register1;
-    int register2;
-    int register3;
-    char str1[50];
-    char str2[50];
-    char str3[50];
-};
-
+ int registerInt[50];
+ char registerChar [50][];       
+} 
 int performOperation(struct registers A, int operation);
 void printResult(int result, int operation);
 void printDisplay(int result, int operation);
@@ -140,75 +135,25 @@ int binary(char binaryString[]) {
     return decimalValue;
 }
 
-void variable(char *word[], int wordCount, const char *type, struct registers *reg) {
-    int regNum = 0;
-    int state;
-    if (strcmp(word[0], "register1") == 0 || strcmp(word[0], "0x0001") == 0) {
-        regNum = 1;
-    } else if (strcmp(word[0], "register2") == 0 || strcmp(word[0], "0x0002") == 0) {
-        regNum = 2;
-    } else if (strcmp(word[0], "register3") == 0 || strcmp(word[0], "0x0003") == 0) {
-        regNum = 3;
-    } else {
-        return; 
-    }
-    if (strcmp(type, "int") == 0) {
-        state = 0;
-        int value = atoi(word[2]);
-        if (value >= 0) {
-            switch (regNum) {
-                case 1:
-                    reg->register1 = value;
-                    break;
-                case 2:
-                    reg->register2 = value;
-                    break;
-                case 3:
-                    reg->register3 = value;
-                    break;
+void variable(char *word[],  char *type, struct registers *reg) {
+    int variableLimit;
+    int registers[1000];
+    i= atoi(word[0][length-1];)
+    int lenght =strlen(word[0]);
+    char string_representation[10];
+    char registerStr[8]= word[0][length-1] = '\0';
+        if (strcmp(word[1], "int" )==0   && strcmp(word[0], registerStr)==0  ){ 
+        reg.registerInt[i]= atoi(word[2]);
+        char type[10]= word[1];
+        }
+        if (strcmp(word[1], "char" )==0   && strcmp(word[0],registerStr)==0  ){ 
+       reg.registerChar[i] = word[2];    
+        }
+        if(strcmp(word[1], registerStr )==0   && strcmp(word[0], "write"==0  ){ 
+            switch(type){
+            case "int": printf("%d", reg.registerInt[i]);
+            case "char": printf("%s", reg.registerChar[i]);
             }
-        }
-    } else if (strcmp(type, "string") == 0) {
-        state = 1;
-        switch (regNum) {
-            case 1:
-                strcpy(reg->str1, word[2]);
-                break;
-            case 2:
-                strcpy(reg->str2, word[2]);
-                break;
-            case 3:
-                strcpy(reg->str3, word[2]);
-                break;
-        }
-    }
-}
-
-
-if ( strcmp(word[0], "printf")==0  && strcmp(word[1], "register1") == 0 || strcmp(word[1], "0x0001") == 0  )  {
-    if(state==0){
-        printf("%d",register1);
-    }
-    else{
-        printf("%s",str1);
-    }  
-    } else if ( strcmp(word[0], "printf")==0  && strcmp(word[1], "register2") == 0 || strcmp(word[1], "0x0002") == 0  )  {
-    if(state==0){
-        printf("%d",register2);
-    }
-    else{
-        printf("%s",str2);
-    }  
-    } else if ( strcmp(word[0], "printf")==0  && strcmp(word[1], "register3") == 0 || strcmp(word[1], "0x0003") == 0  )  {
-  if(state==0){
-        printf("%d",register3);
-    }
-    else{
-        printf("%s",str3);
-    }  
-    } else {
-        return; 
-    }
 void functions(struct registers *reg) {
     FILE *fptr;
     fptr = fopen("filename.txt", "r");
@@ -247,6 +192,6 @@ void functions(struct registers *reg) {
         free(word);
         lineCount++;
     }
-
+     free(word);
     fclose(fptr);
 }
