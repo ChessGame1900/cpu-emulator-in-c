@@ -1,5 +1,10 @@
-for creating varible you need to write: dataType register value 
-(dataType: int, float, bool, string, char), (value using int: any number including negatives; value using bool: true or false/ 1 or 0; value using strings or char needs to be in 2 quotation marks), (register:
-name or hexadecimal number( as example register1 or 0x0001) 
- printf : printf register
-(register can be expressed as hexadecimal( 0x0001,0x0002,0x0003) or as register's name( register1,register2,register3)
+for creating varible you need to declare : register dataType value
+(register can be named as register and number ( as example register1) or hexadecimal( 0x000A) ( removed hexadecimal for not a long time. Work in progress)) ( dataType can be int or char( later will be implemented more dataTypes)) ( value can be string or
+integer( later will be added more variants like true or false, imaginary numbers, numbers with floating point ext.)) 
+
+for printing in console: write register
+(register as register and number( as example register1) or hexadecimal( 0x000A)) ( you don't need to worry about dataType, code analyze and use needed)
+
+for getting input from user: read register
+(will be added later)
+
