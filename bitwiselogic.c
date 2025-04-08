@@ -6,7 +6,7 @@
 
 struct registers {
  int registerInt[50];
- char registerChar [50][];       
+ char registerChar [50][10];       
 } 
 int performOperation(struct registers A, int operation);
 void printResult(int result, int operation);
@@ -23,8 +23,8 @@ int main(void) {
     printf("Please input 1 for using cpu emulator or 0 for file coding\n");
     scanf("%d", &mode);
     if (mode == 1) {
-        A.register1 = getRegisterValue();
-        A.register2 = getRegisterValue();
+        A.registerInt[1] = getRegisterValue();
+        A.registerInt[2]= getRegisterValue();
         printf("Enter operation:\n");
         printf("1=AND, 2=OR, 3=XOR, 4=NOR: \n");
         scanf("%d", &operation);
@@ -59,10 +59,10 @@ int getRegisterValue() {
 int performOperation(struct registers A, int operation) {
     int result = 0;
     switch (operation) {
-        case 1: result = A.register1 & A.register2; break;
-        case 2: result = A.register1 | A.register2; break;
-        case 3: result = A.register1 ^ A.register2; break;
-        case 4: result = ~(A.register1 | A.register2); break;
+        case 1: result = A.registerInt[1] & A.registerInt[2]; break;
+        case 2: result = A.registerInt[1] | A.registerInt[2]; break;
+        case 3: result = A.registerInt[1] ^ A.registerInt[2]; break;
+        case 4: result = ~(A.registerInt[1] | A.registerInt[2]); break;
     }
     return result;
 }
@@ -135,21 +135,21 @@ int binary(char binaryString[]) {
     return decimalValue;
 }
 
-void variable(char *word[],  char *type, struct registers *reg) {
+void variable(char *word[],  struct registers *reg) {
     int variableLimit;
     int registers[1000];
-    i= atoi(word[0][length-1];)
     int lenght =strlen(word[0]);
+    int  i= atoi(word[0][lenght-1]);
     char string_representation[10];
-    char registerStr[8]= word[0][length-1] = '\0';
-        if (strcmp(word[1], "int" )==0   && strcmp(word[0], registerStr)==0  ){ 
+    char registerStr[8]= word[0][lenght-1] = '\0';
+        if (strcmp(word[1], "int" )   && strcmp(word[0], registerStr)  ){ 
         reg.registerInt[i]= atoi(word[2]);
         char type[10]= word[1];
         }
-        if (strcmp(word[1], "char" )==0   && strcmp(word[0],registerStr)==0  ){ 
-       reg.registerChar[i] = word[2];    
+        if (strcmp(word[1], "char" )  && strcmp(word[0],registerStr) ){ 
+       strcpy(reg.registerChar[i] , word[2]);
         }
-        if(strcmp(word[1], registerStr )==0   && strcmp(word[0], "write"==0  ){ 
+        if(strcmp(word[1], registerStr )  && strcmp(word[0], "write")  ){ 
             switch(type){
             case "int": printf("%d", reg.registerInt[i]);
             case "char": printf("%s", reg.registerChar[i]);
@@ -188,8 +188,6 @@ void functions(struct registers *reg) {
             i++;
             token = strtok(NULL, " ");
         }
-        
-        free(word);
         lineCount++;
     }
      free(word);
