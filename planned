@@ -1,3 +1,1 @@
-Made: two complement, And, xor, or,nor , 7-segment vertical output
-To do: addition,subtraction,multiplication,division, shifting(left and right), memory managment, horiznotal 7-segment display, 2d implemenatiton using others libraries,
-parser and compilator for c/assembly like languege
+To do: read, if,else, comments, other Alu functions, horizontal 7-segment display
