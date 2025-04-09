@@ -7,13 +7,13 @@
 struct registers {
  int registerInt[50];
  char registerChar [50][10];       
-} 
+};
 int performOperation(struct registers A, int operation);
 void printResult(int result, int operation);
 void printDisplay(int result, int operation);
 int binary(char binaryString[]);
 int getRegisterValue();
-void variable(char *word[], int wordCount, const char *type, struct registers *reg);
+void variable(char *word[], struct registers *reg);
 void functions(struct registers *reg);
 
 int main(void) {
@@ -134,26 +134,36 @@ int binary(char binaryString[]) {
     }
     return decimalValue;
 }
-
-void variable(char *word[],  struct registers *reg) {
+void variable(char *word[], struct registers *reg) {
     int variableLimit;
     int registers[1000];
-    int lenght =strlen(word[0]);
-    int  i= atoi(word[0][lenght-1]);
+    int lenght = strlen(word[0]);
+    int i = atoi(&word[0][lenght-1]);
     char string_representation[10];
-    char registerStr[8]= word[0][lenght-1] = '\0';
-        if (strcmp(word[1], "int" )   && strcmp(word[0], registerStr)  ){ 
-        reg.registerInt[i]= atoi(word[2]);
-        char type[10]= word[1];
+    char registerStr[8];
+    char type[10];
+    word[0][lenght-1] = '\0';
+    if (strcmp(word[1], "int") == 0 && strcmp(word[0], registerStr) == 0) {
+        reg->registerInt[i] = atoi(word[2]);
+        strcpy(type, word[1]);
+    }
+    if (strcmp(word[1], "char") == 0 && strcmp(word[0], registerStr) == 0) {
+        strcpy(reg->registerChar[i], word[2]);
+    }
+    if(strcmp(word[1], registerStr) == 0 && strcmp(word[0], "write") == 0) {
+        if (strcmp(type, "int") == 0) {
+            printf("%d", reg->registerInt[i]);
+        } else if (strcmp(type, "char") == 0) {
+            printf("%s", reg->registerChar[i]);
         }
-        if (strcmp(word[1], "char" )  && strcmp(word[0],registerStr) ){ 
-       strcpy(reg.registerChar[i] , word[2]);
-        }
-        if(strcmp(word[1], registerStr )  && strcmp(word[0], "write")  ){ 
-            switch(type){
-            case "int": printf("%d", reg.registerInt[i]);
-            case "char": printf("%s", reg.registerChar[i]);
-            }
+    }
+    if(strcmp(word[2], registerStr) == 0 && strcmp(word[0], "read") == 0 && strcmp(word[1], "int") == 0) {
+        scanf("%d", &reg->registerInt[i]);
+    }
+    else if(strcmp(word[2], registerStr) == 0 && strcmp(word[0], "read") == 0 && strcmp(word[1], "string") == 0) {
+        scanf("%s", reg->registerChar[i]);
+    }
+}
 void functions(struct registers *reg) {
     FILE *fptr;
     fptr = fopen("filename.txt", "r");
@@ -172,7 +182,7 @@ void functions(struct registers *reg) {
     getchar(); 
     char str[100];
     int lineCount = 0;
-
+    char **word;
     while (fgets(str, 100, fptr) != NULL && lineCount <= lineLimit) {
         str[strcspn(str, "\n")] = 0; 
         char **word = malloc(x * sizeof(char *));
@@ -189,7 +199,8 @@ void functions(struct registers *reg) {
             token = strtok(NULL, " ");
         }
         lineCount++;
+        free(word);
     }
-     free(word);
+   
     fclose(fptr);
 }
