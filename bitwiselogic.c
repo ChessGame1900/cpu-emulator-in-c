@@ -138,53 +138,49 @@ void variable(char *word[], struct registers *reg) {
     int variableLimit;
     int registers[1000];
     int lenght = strlen(word[0]);
-    int i = atoi(&word[0][lenght-1]);
-    char string_representation[10];
+    int i = atoi(&word[0][lenght - 1]);
     char registerStr[8];
+    snprintf(registerStr, sizeof(registerStr), "%c", word[0][lenght - 1]);
     char type[10];
-    word[0][lenght-1] = '\0';
     if (strcmp(word[1], "int") == 0 && strcmp(word[0], registerStr) == 0) {
         reg->registerInt[i] = atoi(word[2]);
         strcpy(type, word[1]);
     }
     if (strcmp(word[1], "char") == 0 && strcmp(word[0], registerStr) == 0) {
-        strcpy(reg->registerChar[i], word[2]);
+        strncpy(reg->registerChar[i], word[2], sizeof(reg->registerChar[i]) - 1);
     }
-    if(strcmp(word[1], registerStr) == 0 && strcmp(word[0], "write") == 0) {
+    if (strcmp(word[1], registerStr) == 0 && strcmp(word[0], "write") == 0) {
         if (strcmp(type, "int") == 0) {
             printf("%d", reg->registerInt[i]);
         } else if (strcmp(type, "char") == 0) {
             printf("%s", reg->registerChar[i]);
         }
     }
-    if(strcmp(word[2], registerStr) == 0 && strcmp(word[0], "read") == 0 && strcmp(word[1], "int") == 0) {
+    if (strcmp(word[2], registerStr) == 0 && strcmp(word[0], "read") == 0 && strcmp(word[1], "int") == 0) {
         scanf("%d", &reg->registerInt[i]);
-    }
-    else if(strcmp(word[2], registerStr) == 0 && strcmp(word[0], "read") == 0 && strcmp(word[1], "string") == 0) {
+    } else if (strcmp(word[2], registerStr) == 0 && strcmp(word[0], "read") == 0 && strcmp(word[1], "string") == 0) {
         scanf("%s", reg->registerChar[i]);
     }
 }
 void functions(struct registers *reg) {
-    FILE *fptr;
-    fptr = fopen("filename.txt", "r");
+    FILE *fptr = fopen("filename.txt", "r");
     if (fptr == NULL) {
         printf("Error opening file\n");
         return;
     }
-
     printf("Please write limit for string word count: ");
     int x;
     scanf("%d", &x);
-    getchar(); 
+    getchar();
     printf("Please write limit for line amount: ");
     int lineLimit;
     scanf("%d", &lineLimit);
-    getchar(); 
+    getchar();
     char str[100];
     int lineCount = 0;
-    char **word;
-    while (fgets(str, 100, fptr) != NULL && lineCount <= lineLimit) {
-        str[strcspn(str, "\n")] = 0; 
+    while (fgets(str, sizeof(str), fptr) != NULL && lineCount < lineLimit) {
+        str[strcspn(str, "\n")] = '\0'; 
+
         char **word = malloc(x * sizeof(char *));
         if (word == NULL) {
             printf("Memory allocation failed!\n");
@@ -194,13 +190,26 @@ void functions(struct registers *reg) {
         int i = 0;
         char *token = strtok(str, " ");
         while (token != NULL && i < x) {
-            word[i] = token;
+            word[i] = malloc(strlen(token) + 1); 
+            if (word[i] == NULL) {
+                printf("Memory allocation failed for word[%d]!\n", i);
+                for (int j = 0; j < i; j++) {
+                    free(word[j]);
+                }
+                free(word);
+                fclose(fptr);
+                return;
+            }
+            strcpy(word[i], token);
             i++;
             token = strtok(NULL, " ");
         }
-        lineCount++;
+        variable(word, reg);
+        for (int j = 0; j < i; j++) {
+            free(word[j]);
+        }
         free(word);
+        lineCount++;
     }
-   
     fclose(fptr);
 }
