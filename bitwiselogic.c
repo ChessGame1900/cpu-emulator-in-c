@@ -135,19 +135,19 @@ int binary(char binaryString[]) {
     return decimalValue;
 }
 void variable(char *word[], struct registers *reg) {
-    int variableLimit;
-    int registers[1000];
-    int lenght = strlen(word[0]);
-    int i = atoi(&word[0][lenght - 1]);
+    int length = strlen(word[0]);
+    int i = atoi(&word[0][length - 1]);
     char registerStr[8];
-    snprintf(registerStr, sizeof(registerStr), "%c", word[0][lenght - 1]);
-    char type[10];
+    char type[10] = "";
+    snprintf(registerStr, sizeof(registerStr), "register%d", i);
+    
     if (strcmp(word[1], "int") == 0 && strcmp(word[0], registerStr) == 0) {
         reg->registerInt[i] = atoi(word[2]);
         strcpy(type, word[1]);
     }
     if (strcmp(word[1], "char") == 0 && strcmp(word[0], registerStr) == 0) {
         strncpy(reg->registerChar[i], word[2], sizeof(reg->registerChar[i]) - 1);
+        strcpy(type, word[1]);
     }
     if (strcmp(word[1], registerStr) == 0 && strcmp(word[0], "write") == 0) {
         if (strcmp(type, "int") == 0) {
