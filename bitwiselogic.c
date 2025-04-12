@@ -8,6 +8,16 @@ struct registers {
  int registerInt[50];
  char registerChar [50][10];       
 };
+ int checkCondition(int a, const char* op, int b) {
+        if (strcmp(op, "==") == 0) return a == b;
+        if (strcmp(op, "!=") == 0) return a != b;
+        if (strcmp(op, ">") == 0) return a > b;
+        if (strcmp(op, "<") == 0) return a < b;
+        if (strcmp(op, ">=") == 0) return a >= b;
+        if (strcmp(op, "<=") == 0) return a <= b;
+        return 0;
+    }
+
 int performOperation(struct registers A, int operation);
 void printResult(int result, int operation);
 void printDisplay(int result, int operation);
@@ -15,7 +25,7 @@ int binary(char binaryString[]);
 int getRegisterValue();
 void variable(char *word[], struct registers *reg);
 void functions(struct registers *reg);
-
+ 
 int main(void) {
     int operation;
     struct registers A;
@@ -139,28 +149,47 @@ void variable(char *word[], struct registers *reg) {
     int i = atoi(&word[0][length - 1]);
     char registerStr[8];
     char type[10] = "";
+    int condition=-1;
     snprintf(registerStr, sizeof(registerStr), "register%d", i);
     
-    if (strcmp(word[1], "int") == 0 && strcmp(word[0], registerStr) == 0) {
+    if (strcmp(word[1], "int") == 0 && strcmp(word[0], registerStr) == 0  && condition==-1 ||  condition==1) {
         reg->registerInt[i] = atoi(word[2]);
         strcpy(type, word[1]);
     }
-    if (strcmp(word[1], "char") == 0 && strcmp(word[0], registerStr) == 0) {
+    if (strcmp(word[1], "char") == 0 && strcmp(word[0], registerStr) == 0 && condition==-1 ||  condition==1) {
         strncpy(reg->registerChar[i], word[2], sizeof(reg->registerChar[i]) - 1);
         strcpy(type, word[1]);
     }
-    if (strcmp(word[1], registerStr) == 0 && strcmp(word[0], "write") == 0) {
+    if (strcmp(word[1], registerStr) == 0 && strcmp(word[0], "write") == 0 && condition==-1 ||  condition==1) {
         if (strcmp(type, "int") == 0) {
             printf("%d", reg->registerInt[i]);
         } else if (strcmp(type, "char") == 0) {
             printf("%s", reg->registerChar[i]);
         }
     }
-    if (strcmp(word[2], registerStr) == 0 && strcmp(word[0], "read") == 0 && strcmp(word[1], "int") == 0) {
+    if (strcmp(word[2], registerStr) == 0 && strcmp(word[0], "read") == 0 && strcmp(word[1], "int") == 0 && condition==-1 ||  condition==1) {
         scanf("%d", &reg->registerInt[i]);
-    } else if (strcmp(word[2], registerStr) == 0 && strcmp(word[0], "read") == 0 && strcmp(word[1], "string") == 0) {
+    } else if (strcmp(word[2], registerStr) == 0 && strcmp(word[0], "read") == 0 && strcmp(word[1], "string") == 0)  {
         scanf("%s", reg->registerChar[i]);
     }
+}
+if(strcmp(word[0],"if")==0){
+     int reg1 = word[1][strlen(word[1]) - 1] - '0';
+    int reg2 = word[3][strlen(word[3]) - 1] - '0';
+    if(checkCondition(reg->registerInt[reg1], word[2], reg->registerInt[reg2])) {
+        condition=1;
+    }
+}
+if(strcmp(word[0],"for")==0){
+       int reg1 = word[1][strlen(word[1]) - 1] - '0';
+        int reg2 = word[3][strlen(word[3]) - 1] - '0';
+        while(checkCondition(reg->registerInt[reg1], word[2], reg->registerInt[reg2])) {
+            condition=1;
+        }
+}
+ int numberOfElements = sizeof(word)/ sizeof(int);
+if(strcmp(word[numberOfElements][strlen(word[numberOfElements]) -1]),"}"){
+    condition=0;
 }
 void functions(struct registers *reg) {
     FILE *fptr = fopen("filename.txt", "r");
