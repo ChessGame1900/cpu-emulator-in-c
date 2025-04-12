@@ -149,9 +149,11 @@ void variable(char *word[], struct registers *reg) {
     int i = atoi(&word[0][length - 1]);
     char registerStr[8];
     char type[10] = "";
-    int condition=-1;
+    int condition=0;
     snprintf(registerStr, sizeof(registerStr), "register%d", i);
-    
+    if(strcmp(word[0], "{") ==0){
+        condition=1;
+    }
     if (strcmp(word[1], "int") == 0 && strcmp(word[0], registerStr) == 0  && condition==-1 ||  condition==1) {
         reg->registerInt[i] = atoi(word[2]);
         strcpy(type, word[1]);
