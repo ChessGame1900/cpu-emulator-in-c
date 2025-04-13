@@ -23,7 +23,7 @@ void printResult(int result, int operation);
 void printDisplay(int result, int operation);
 int binary(char binaryString[]);
 int getRegisterValue();
-void variable(char *word[], struct registers *reg);
+void variable(char *word[], struct registers *reg, int wordCount);
 void functions(struct registers *reg);
  
 int main(void) {
@@ -144,7 +144,7 @@ int binary(char binaryString[]) {
     }
     return decimalValue;
 }
-void variable(char *word[], struct registers *reg) {
+void variable(char *word[], struct registers *reg, int wordCount) {
     int length = strlen(word[0]);
     int i = atoi(&word[0][length - 1]);
     char registerStr[8];
@@ -154,6 +154,10 @@ void variable(char *word[], struct registers *reg) {
     if(strcmp(word[0], "{") ==0){
         condition=1;
     }
+    if(strcmp(word[0], "}") ==0){
+        condition=0;
+    }
+
     if (strcmp(word[1], "int") == 0 && strcmp(word[0], registerStr) == 0  && condition==-1 ||  condition==1) {
         reg->registerInt[i] = atoi(word[2]);
         strcpy(type, word[1]);
@@ -174,7 +178,6 @@ void variable(char *word[], struct registers *reg) {
     } else if (strcmp(word[2], registerStr) == 0 && strcmp(word[0], "read") == 0 && strcmp(word[1], "string") == 0)  {
         scanf("%s", reg->registerChar[i]);
     }
-}
 if(strcmp(word[0],"if")==0){
      int reg1 = word[1][strlen(word[1]) - 1] - '0';
     int reg2 = word[3][strlen(word[3]) - 1] - '0';
@@ -189,9 +192,14 @@ if(strcmp(word[0],"for")==0){
             condition=1;
         }
 }
- int numberOfElements = sizeof(word)/ sizeof(int);
-if(strcmp(word[numberOfElements][strlen(word[numberOfElements]) -1]),"}"){
+char *lastWord = word[wordCount-1];
+int lastWordLen = strlen(lastWord);
+if (lastWordLen > 0 && lastWord[lastWordLen-1] == '}') {
+    condition = 0;
+}
+if(strcmp(word[i-1], "}")==0){
     condition=0;
+}
 }
 void functions(struct registers *reg) {
     FILE *fptr = fopen("filename.txt", "r");
@@ -235,7 +243,7 @@ void functions(struct registers *reg) {
             i++;
             token = strtok(NULL, " ");
         }
-        variable(word, reg);
+        variable(word, reg, i);
         for (int j = 0; j < i; j++) {
             free(word[j]);
         }
