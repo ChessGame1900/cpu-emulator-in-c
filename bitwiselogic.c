@@ -7,6 +7,9 @@
 struct registers {
  int registerInt[50];
  char registerChar [50][10];       
+ char type[50][10];
+ int intArray[50][intA];
+ char charArray[charA][charB];
 };
  int checkCondition(int a, const char* op, int b) {
         if (strcmp(op, "==") == 0) return a == b;
@@ -15,6 +18,10 @@ struct registers {
         if (strcmp(op, "<") == 0) return a < b;
         if (strcmp(op, ">=") == 0) return a >= b;
         if (strcmp(op, "<=") == 0) return a <= b;
+        if (strcmp(op, "+") == 0) return a + b;
+        if (strcmp(op, "-") == 0) return a - b;
+        if (strcmp(op, "*") == 0) return a * b;
+        if (strcmp(op, "/") == 0) return a / b;
         return 0;
     }
 
@@ -144,58 +151,80 @@ int binary(char binaryString[]) {
     }
     return decimalValue;
 }
+int str(int a1, char *word[]){
+int length = strlen(word[a]);
+int  a1 = atoi(&word[a][length - 1]);
+return a1;
+return length;
+}
+
 void variable(char *word[], struct registers *reg, int wordCount) {
-    int length = strlen(word[0]);
-    int i = atoi(&word[0][length - 1]);
-    char registerStr[8];
-    char type[10] = "";
-    int condition=0;
-    snprintf(registerStr, sizeof(registerStr), "register%d", i);
+    int i  = str(0, word);
     if(strcmp(word[0], "{") ==0){
         condition=1;
     }
     if(strcmp(word[0], "}") ==0){
         condition=0;
     }
-
-    if (strcmp(word[1], "int") == 0 && strcmp(word[0], registerStr) == 0  && condition==-1 ||  condition==1) {
+    if (strcmp(word[0], "int") == 0 && condition==-1 ||  condition==1) {
         reg->registerInt[i] = atoi(word[2]);
-        strcpy(type, word[1]);
+        strcpy(reg->type[i],word[0]);
     }
-    if (strcmp(word[1], "char") == 0 && strcmp(word[0], registerStr) == 0 && condition==-1 ||  condition==1) {
-        strncpy(reg->registerChar[i], word[2], sizeof(reg->registerChar[i]) - 1);
-        strcpy(type, word[1]);
+    if (strcmp(word[0], "char") == 0 && condition==-1 ||  condition==1) {
+        strncpy(reg->registerChar[i], word[2])
+        strcpy(reg->type[i],word[0]);
     }
-    if (strcmp(word[1], registerStr) == 0 && strcmp(word[0], "write") == 0 && condition==-1 ||  condition==1) {
-        if (strcmp(type, "int") == 0) {
+
+     if(strcmp(word[1][lenght-3],"["  ) ==0 && strcmp(word[1][lenght-1],"]"  ) ==0 ){
+        char name[50] = word[1];
+        for(int b=0;b<4;b++){
+            name[length-b]= '\0';
+        }
+        if(strcmp(word[0],"int")==0){
+        intArray[][atoi(word[1][lenght-2])];
+        if(strcmp(word[2],"=")==0 ){
+        for(int b=0; b<atoi(word[1][lenght-2]);b++){
+            intArray[b]= atoi(word[3+b]);
+        }
+        }
+        }
+        if(strcmp(word[0],"char")==0){
+        charArray[][atoi(word[1][lenght-2])];
+        if(strcmp(word[2],"=")==0 ){
+        for(int b=0; b<atoi(word[1][lenght-2]);b++){
+          strcmp(charArray[b],word[3+b]);
+        }
+        }
+        }
+}
+
+    if (strcmp(word[0], "write") == 0 && condition==-1 ||  condition==1) {
+        i= str(1,word);
+        if (strcmp(reg->type[i], "int") == 0) {
             printf("%d", reg->registerInt[i]);
-        } else if (strcmp(type, "char") == 0) {
+        } else if (strcmp(reg->type[i], "char") == 0) {
             printf("%s", reg->registerChar[i]);
         }
     }
-    if (strcmp(word[2], registerStr) == 0 && strcmp(word[0], "read") == 0 && strcmp(word[1], "int") == 0 && condition==-1 ||  condition==1) {
-        scanf("%d", &reg->registerInt[i]);
-    } else if (strcmp(word[2], registerStr) == 0 && strcmp(word[0], "read") == 0 && strcmp(word[1], "string") == 0)  {
+    if (strcmp(word[0], "read") == 0 && condition==-1 ||  condition==1) {
+        i=str(1,word);
+        if(strcmp(word[1], "int") == 0 ){
+              scanf("%d", &reg->registerInt[i]);
+        }
+        else if(strcmp(word[1], "char") == 0 ){
         scanf("%s", reg->registerChar[i]);
-    }
-if(strcmp(word[0],"if")==0){
-     int reg1 = word[1][strlen(word[1]) - 1] - '0';
-    int reg2 = word[3][strlen(word[3]) - 1] - '0';
-    if(checkCondition(reg->registerInt[reg1], word[2], reg->registerInt[reg2])) {
-        condition=1;
-    }
+         }
+}
+    if(strcmp(word[3], "=") == 0  && condition==-1 ||  condition==1)  {
+        registerInt[atoi(&word[4][length - 1]);] = checkCondition(reg->registerInt[atoi(&word[0][length - 1]);], word[2], reg->registerInt[atoi(&word[2][length - 1]);]) ;
+}
+if(strcmp(word[0],"if")==0  && checkCondition(reg->registerInt[reg1], word[2], reg->registerInt[reg2])){
+    condition=1;
 }
 if(strcmp(word[0],"for")==0){
-       int reg1 = word[1][strlen(word[1]) - 1] - '0';
-        int reg2 = word[3][strlen(word[3]) - 1] - '0';
         while(checkCondition(reg->registerInt[reg1], word[2], reg->registerInt[reg2])) {
             condition=1;
         }
-}
-char *lastWord = word[wordCount-1];
-int lastWordLen = strlen(lastWord);
-if (lastWordLen > 0 && lastWord[lastWordLen-1] == '}') {
-    condition = 0;
 }
 if(strcmp(word[i-1], "}")==0){
     condition=0;
