@@ -7,8 +7,8 @@ integer( later will be added more variants like true or false, imaginary numbers
 
 Functions: 
 For printing in console: write register
-For getting input from user: read register
-(as example register1) or hexadecimal( 0x000A)) ( you don't need to worry about dataType in write function)
+For getting input from user: read dataType register
+(as example register1) or hexadecimal( 0x000A)) ( you don't need to worry about dataType in write function)(datatype same as variable declaration types)
 If, while, for: 
 For if, while and for and for you can use ==, !=,>,<,>=,<=( == compare if arguments are equal, != compare if arguments are not equal, > and < as in mathematics compare first with second argument, >= and <= compare if first or second arguments is greater or euqal)
 
