@@ -25,7 +25,9 @@ Functions:
 For creating function you need to declare: returnType name
 (returnType as dataType for variables)( name can be any char[] (string) )
 
-
+For save line for later using you need to write in the end of the line character 's'.
+For executing saved line you need to declare: save savedLineindex + 's'
+(as example: save 1s)
 
 
 
