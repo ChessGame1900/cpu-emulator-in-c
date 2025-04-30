@@ -4,13 +4,17 @@
 #include <string.h>
 #include <stdlib.h>
 
-struct registers {
  int registerInt[50];
  char registerChar [50][10];       
  char type[50][10];
- int intArray[50][intA];
- char charArray[charA][charB];
-};
+ int r= atoi(word[1][lenght-2]);
+int* arr[r];
+for (i = 0; i < r; i++)
+    arr[i] = (int*)malloc( 50* sizeof(int));
+char* arr1[r];
+for (i = 0; i < r; i++)
+    arr1[i] = (char*)malloc( 50* sizeof(char));
+
  int checkCondition(int a, const char* op, int b) {
         if (strcmp(op, "==") == 0) return a == b;
         if (strcmp(op, "!=") == 0) return a != b;
@@ -155,79 +159,128 @@ int str(int a1, char *word[]){
 int length = strlen(word[a]);
 int  a1 = atoi(&word[a][length - 1]);
 return a1;
-return length;
 }
 
-void variable(char *word[], struct registers *reg, int wordCount) {
+void variable(char *word[]) {
+    FILE *fptr1;
+    fptr1 =  fopen("filename.asm", "w");
+    int data;
     int i  = str(0, word);
-    if(strcmp(word[0], "{") ==0){
-        condition=1;
+    int condition = 0;
+    if(strcmp(word[0], "section") ==0 && strcmp(word[1],".data") ){
+        data =1;
     }
-    if(strcmp(word[0], "}") ==0){
+    if(strcmp(word[0], "void")==0 || strcmp(word[0],"int")==0   || strcmp(word[0],"char")==0){
+    char function[50];
+    char returnType[4];
+    strcpy(function, word[1]);
+    strcpy(returnType, word[0]);
+    }
+    if(strcmp(word[0], "}") ==0 ){
         condition=0;
     }
-    if (strcmp(word[0], "int") == 0 && condition==-1 ||  condition==1) {
-        reg->registerInt[i] = atoi(word[2]);
-        strcpy(reg->type[i],word[0]);
+    if (strcmp(word[0], "int") == 0 && data==-1 ||  data==1  || condition==1  || condition=-1 ) {
+        registerInt[i] = atoi(word[2]);
+        fprintf(fptr1,"section .data");
+        fprintf(fptr1, "%s dd  %d", word[1], word[2]);
+        strcpy(type[i],word[0]);
     }
-    if (strcmp(word[0], "char") == 0 && condition==-1 ||  condition==1) {
-        strncpy(reg->registerChar[i], word[2])
-        strcpy(reg->type[i],word[0]);
+    if (strcmp(word[0], "char") == 0 && data==-1 ||  data==1 || condition==1  || condition=-1) {
+        strncpy(registerChar[i], word[2]);
+         fprintf(fptr1,"section .data");
+        fprintf(fptr1, "%s db  %s", word[1], word[2]);
+        strcpy(type[i],word[0]);
     }
-
-     if(strcmp(word[1][lenght-3],"["  ) ==0 && strcmp(word[1][lenght-1],"]"  ) ==0 ){
+    if(strcmp(word[0],function)==0){
+    
+    }
+     if(strcmp(word[1][lenght-3],"["  ) ==0 && strcmp(word[1][lenght-1],"]"  ) ==0  && data==-1 ||  data==1 || condition==1  || condition=-1 ){
         char name[50] = word[1];
         for(int b=0;b<4;b++){
             name[length-b]= '\0';
         }
-        if(strcmp(word[0],"int")==0){
-        intArray[][atoi(word[1][lenght-2])];
-        if(strcmp(word[2],"=")==0 ){
-        for(int b=0; b<atoi(word[1][lenght-2]);b++){
-            intArray[b]= atoi(word[3+b]);
+        int val = atoi(word[1][lenght-2]);
+        for( int bx= 0, bx<=val, bx++){
+        char value[val];
+       value = word[bx]+ ","; 
         }
-        }
+        if(strcmp(word[0],"int")==0) {
+        fprintf("%s db %s", word[1], value);
         }
         if(strcmp(word[0],"char")==0){
-        charArray[][atoi(word[1][lenght-2])];
-        if(strcmp(word[2],"=")==0 ){
-        for(int b=0; b<atoi(word[1][lenght-2]);b++){
-          strcmp(charArray[b],word[3+b]);
+        fprintf("%s dd %s", word[1], value);
         }
-        }
-        }
-}
-
     if (strcmp(word[0], "write") == 0 && condition==-1 ||  condition==1) {
         i= str(1,word);
-        if (strcmp(reg->type[i], "int") == 0) {
-            printf("%d", reg->registerInt[i]);
-        } else if (strcmp(reg->type[i], "char") == 0) {
-            printf("%s", reg->registerChar[i]);
+        if (strcmp(type[i], "int") == 0) {
+            fprintf("mov eax, ["%s"]", registerInt[i]);
+            fprintf("call print");
+        } else if (strcmp(type[i], "char") == 0) {
+            fprintf("mov eax, ["%s"]", registerChar[i]);
+            fprintf("call print");
         }
     }
     if (strcmp(word[0], "read") == 0 && condition==-1 ||  condition==1) {
         i=str(1,word);
         if(strcmp(word[1], "int") == 0 ){
-              scanf("%d", &reg->registerInt[i]);
+            fprintf("call read");
+            fprintf("mov  ["%s"], eax", registerInt[i]);
+            
         }
         else if(strcmp(word[1], "char") == 0 ){
-        scanf("%s", reg->registerChar[i]);
+             fprintf("call read");
+            fprintf("mov  ["%s"], eax", registerChar[i]);
          }
 }
     if(strcmp(word[3], "=") == 0  && condition==-1 ||  condition==1)  {
-        registerInt[atoi(&word[4][length - 1]);] = checkCondition(reg->registerInt[atoi(&word[0][length - 1]);], word[2], reg->registerInt[atoi(&word[2][length - 1]);]) ;
+        registerInt[atoi(&word[4][length - 1]);] = checkCondition(registerInt[atoi(&word[0][length - 1]);], word[2], registerInt[atoi(&word[2][length - 1]);]) ;
 }
-if(strcmp(word[0],"if")==0  && checkCondition(reg->registerInt[reg1], word[2], reg->registerInt[reg2])){
+int reg1 = str(1,word);
+int reg2= str(3);
+if(strcmp(word[0],"if")==0  && checkCondition(registerInt[reg1], word[2], registerInt[reg2])){
     condition=1;
 }
 if(strcmp(word[0],"for")==0){
-        while(checkCondition(reg->registerInt[reg1], word[2], reg->registerInt[reg2])) {
+        while(checkCondition(registerInt[reg1], word[2], registerInt[reg2])) {
             condition=1;
         }
 }
+if(strcmp(word[0],"return")==0){
+    if(strcmp(returnType,"int")==0){
+     int returnInt[100];
+     int b= 0;
+     if(strcmp(word[1], "0")!=0  &&atoi(word[1])==0) {
+     returnInt[b]= registerInt[atoi(word[1][lenght-1])];
+     }
+     else{
+        returnInt[b]= atoi(word[1]);
+     }
+     b++;
+    }
+    if(strcmp(returnType,"char")==0){
+     char returnChar[50][100];
+     int b= 0;
+     returnInt[b];
+     b++;
+    if(atoi(word[1][lenght-1])<=0 && word[1][lenght-1] != "0"){
+    strcpy(returnChar, word[1]);
+    }
+    else{
+     returnChar[b]= registerChar[atoi(word[1][lenght-1])];
+    }
+}
+
 if(strcmp(word[i-1], "}")==0){
     condition=0;
+}
+if(strcmp(word[i-1],"s")==0){
+    char save[50][50];
+    for(int b1= 0, b<i-1, b1++){
+        save[b1] = save + word[b1];
+    }
+}
+if(strcmp(word[0], "save")==0 && strcmp(word[0][lenght-1],"s" )==0){
+    variable(save[lenght-2]);
 }
 }
 void functions(struct registers *reg) {
@@ -272,11 +325,13 @@ void functions(struct registers *reg) {
             i++;
             token = strtok(NULL, " ");
         }
-        variable(word, reg, i);
+        variable(word);
         for (int j = 0; j < i; j++) {
+            char  saved[50][100];
+            arr1[i] = (char*)malloc( 50* sizeof(char));
+            strncpy(saved[j][i], word);
             free(word[j]);
         }
-        free(word);
         lineCount++;
     }
     fclose(fptr);
