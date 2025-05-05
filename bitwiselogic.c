@@ -28,14 +28,72 @@ for (i = 0; i < r; i++)
         if (strcmp(op, "/") == 0) return a / b;
         return 0;
     }
-
-int performOperation(struct registers A, int operation);
+int assemblyCondition(int a, const char* , int b, char *){
+         if (strcmp(op, "==") == 0) {
+        fprintf(fptr1, "cmp dword ["%s"], ["%s"]", word[0], word[2]);
+        fprintf(fptr1, "je equal_");
+        fprintf(fptr1, "equal_: ");
+         }
+        if (strcmp(op, "!=") == 0){
+        fprintf(fptr1, "cmp dword ["%s"], ["%s"]", word[0], word[2]);
+        fprintf(fptr1, "jne notEqual_");
+        fprintf(fptr1, "notEqual_: ");
+        }
+        if (strcmp(op, ">") == 0){
+        fprintf(fptr1, "cmp dword ["%s"], ["%s"]", word[0], word[2]);
+        fprintf(fptr1, "jg greater_");
+        fprintf(fptr1, "greater_: ");
+        }
+        if (strcmp(op, "<") == 0) {
+        fprintf(fptr1, "cmp dword ["%s"], ["%s"]", word[0], word[2]);
+        fprintf(fptr1, "jl less_");
+        fprintf(fptr1, "less_: ");
+        }
+        if (strcmp(op, ">=") == 0){
+        fprintf(fptr1, "cmp dword ["%s"], ["%s"]", word[0], word[2]);
+        fprintf(fptr1, "jge  greaterOrEqual_");
+        fprintf(fptr1, "greaterOrEqual_: ");
+        }
+        if (strcmp(op, "<=") == 0) {
+        fprintf(fptr1, "cmp dword ["%s"], ["%s"]", word[0], word[2]);
+        fprintf(fptr1, "jle lessOrEqual_");
+        fprintf(fptr1, "less_: ");
+        }
+        if (strcmp(op, "+") == 0) {
+         fprintf(fptr1, "mov eax, "%s"", word[0]);
+        fprintf(fptr1, "mov ebx, "%s"", word[2]);
+         fprintf(fptr1, "add eax, ebx");
+         fprintf(fptr1, "mov ["%s"], eax", word[4]);
+        }
+        if (strcmp(op, "-") == 0) {
+        fprintf(fptr1, "mov eax, "%s"", word[0]);
+        fprintf(fptr1, "mov ebx, "%s"", word[2]);
+         fprintf(fptr1, "add eax, ebx");
+         fprintf(fptr1, "mov ["%s"], eax", word[4]);
+        }
+        if (strcmp(op, "*") == 0){
+        fprintf(fptr1, "mov eax, "%s"", word[0]);
+        fprintf(fptr1, "mov ebx, "%s"", word[2]);
+         fprintf(fptr1, "imul eax, ebx");
+         fprintf(fptr1, "mov ["%s"], eax", word[4]);
+        }
+        if (strcmp(op, "/") == 0) {
+        fprintf(fptr1, "mov eax, "%s"", word[0]);
+        fprintf(fptr1, "mov ebx, "%s"", word[2]);
+         fprintf(fptr1, "xor edx, edx");
+         fprintf(fptr1, "idiv ebx");
+          fprintf(fptr1, "idiv ebx");
+          fprintf(fptr1, "mov ["%s"], eax", word[4]);
+        }
+        return 0;
+}
+int performOperation();
 void printResult(int result, int operation);
 void printDisplay(int result, int operation);
 int binary(char binaryString[]);
 int getRegisterValue();
-void variable(char *word[], struct registers *reg, int wordCount);
-void functions(struct registers *reg);
+void variable(char *word[], int wordCount);
+void functions();
  
 int main(void) {
     int operation;
@@ -77,13 +135,13 @@ int getRegisterValue() {
     return isBinary ? binary(input) : atoi(input);
 }
 
-int performOperation(struct registers A, int operation) {
+int performOperation() {
     int result = 0;
     switch (operation) {
-        case 1: result = A.registerInt[1] & A.registerInt[2]; break;
-        case 2: result = A.registerInt[1] | A.registerInt[2]; break;
-        case 3: result = A.registerInt[1] ^ A.registerInt[2]; break;
-        case 4: result = ~(A.registerInt[1] | A.registerInt[2]); break;
+        case 1: result = registerInt[1] & registerInt[2]; break;
+        case 2: result = registerInt[1] | registerInt[2]; break;
+        case 3: result = registerInt[1] ^ registerInt[2]; break;
+        case 4: result = ~(registerInt[1] | registerInt[2]); break;
     }
     return result;
 }
@@ -233,11 +291,12 @@ void variable(char *word[]) {
          }
 }
     if(strcmp(word[3], "=") == 0  && condition==-1 ||  condition==1)  {
-        registerInt[atoi(&word[4][length - 1]);] = checkCondition(registerInt[atoi(&word[0][length - 1]);], word[2], registerInt[atoi(&word[2][length - 1]);]) ;
+    assemblyCondition(registerInt[atoi(&word[0][length - 1])], word[2], registerInt[atoi(&word[2][length - 1])],word) ;
 }
 int reg1 = str(1,word);
 int reg2= str(3);
 if(strcmp(word[0],"if")==0  && checkCondition(registerInt[reg1], word[2], registerInt[reg2])){
+    assemblyCondition(registerInt[reg1], word[2], registerInt[reg2], word);
     condition=1;
 }
 if(strcmp(word[0],"for")==0){
@@ -283,7 +342,7 @@ if(strcmp(word[0], "save")==0 && strcmp(word[0][lenght-1],"s" )==0){
     variable(save[lenght-2]);
 }
 }
-void functions(struct registers *reg) {
+void functions() {
     FILE *fptr = fopen("filename.txt", "r");
     if (fptr == NULL) {
         printf("Error opening file\n");
