@@ -11,7 +11,10 @@ For getting input from user: read dataType register
 (as example register1) or hexadecimal( 0x000A)) ( you don't need to worry about dataType in write function)(datatype same as variable declaration types)
 If, while, for: 
 For if, while and for and for you can use ==, !=,>,<,>=,<=( == compare if arguments are equal, != compare if arguments are not equal, > and < as in mathematics compare first with second argument, >= and <= compare if first or second arguments is greater or euqal)
-
+for if you need to declare: if val1 sign val2
+for for you need to declare: for val1 sign val2 val3 operator
+(val1,val2,val3 are variables) (sign is comparing operator(==, !=,>,<,>=,<=)) (operator is arithmetic operator)
+for while you need to declare: while val1 sign val2
 Arrays: 
 For declaring array you need write : dataType name[variableAmountLimit]= var, var, var
 (dataTypa can ba int or char( later will be other types), name can be any string, variableAmountLimit is variable amount limit :), var can be any value or variable) (if array is char array you need to also decalare all array string character limit as in c)
