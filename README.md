@@ -1,2 +1,3 @@
-Hello! This is a small project on which I am working. Syntax is explained in 'manual' file :)
-Project goal is to make a compiled programming language with syntax amid c and assembly.
+Hello! This is a small project on which I am working. Project idea is to create a compiled to assembly programming languge and file manager for it :)
+In the manual file syntax is explained :)
+good luck :) with best wishes and hugs :)
