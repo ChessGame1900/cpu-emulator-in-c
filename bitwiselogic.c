@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <sys/mman.h>
  int registerInt[50];
  char registerChar [50][10];       
  char type[50][10];
@@ -236,6 +236,7 @@ void variable(char *word[]) {
         data =1;
     }
     if(strcmp(word[0], "void")==0 || strcmp(word[0],"int")==0   || strcmp(word[0],"char")==0){
+    condition =1;
     char function[50];
     char returnType[4];
     strcpy(function, word[1]);
@@ -244,8 +245,14 @@ void variable(char *word[]) {
     if(strcmp(word[0], "}") ==0 ){
         condition=0;
     }
-    else if(strcmp(word[0], "}") ==0  && forCondition==0){
+    else if(strcmp(word[0], "}") ==0  && forCondition==1){
          fprintf(fptr1, "jmp "%s" ",loop )
+    }
+    else if(strcmp(word[i-1], "}")==0){
+    condition=0;
+}
+  else if(strcmp(word[i-1], "}") ==0  && forCondition==1){
+         fprintf(fptr1, "jmp "%s" ",loop );
     }
     if (strcmp(word[0], "int") == 0 && data==-1 ||  data==1  || condition==1  || condition=-1 ) {
         registerInt[i] = atoi(word[2]);
@@ -310,6 +317,7 @@ if(strcmp(word[0],"if")==0  && checkCondition(registerInt[reg1], word[2], regist
     condition=1;
 }
 if(strcmp(word[0],"for")==0){
+            int forCondition = 1;
             assemblyCondition(registerInt[reg1], word[2], registerInt[reg2], word);
             fprintf(fptr1, "dd "%s" "%d"", word[4], registerInt[str(4,word)]);
             if(strcmp(word[5],"-")==0){
@@ -347,12 +355,6 @@ if(strcmp(word[0],"return")==0){
     }
 }
 
-if(strcmp(word[i-1], "}")==0){
-    condition=0;
-}
-  else if(strcmp(word[i-1], "}") ==0  && forCondition==0){
-         fprintf(fptr1, "jmp "%s" ",loop );
-    }
 if(strcmp(word[i-1],"s")==0){
     char save[50][50];
     for(int b1= 0, b<i-1, b1++){
@@ -418,6 +420,21 @@ void functions() {
     }
     fclose(fptr);
 }
+void executeAssembly(const char* assemblyCode) {
+    void* memory = mmap(NULL, strlen(assemblyCode), 
+                       PROT_READ | PROT_WRITE | PROT_EXEC,
+                       MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    
+    if (memory == MAP_FAILED) {
+        printf("Memory allocation failed\n");
+        return;
+    }
+    memcpy(memory, assemblyCode, strlen(assemblyCode));
+    void (func)() = (void()())memory;
+    func();
+    munmap(memory, strlen(assemblyCode));
+}
+
 void files(){
     FILE *fptr ;
     printf("Hello! writing to blank file ,rewriting file or creating file you need to write: write path, for writing to file : writeA path,  for reading: read path, for printing file : print" );
@@ -447,7 +464,12 @@ void files(){
         while(fgets(myString, 100, fptr)) {
             printf("%s", myString);
     }
-
+    else if( strcmp(worda[0], "compile")==0){
+        char myString[150];
+        while(fgets(myString,100,fptr)){
+         executeAssembly(assemblyCode);
+        }
+    }
     }
 }
 
