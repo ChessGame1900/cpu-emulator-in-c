@@ -12,8 +12,10 @@ section .data
 char hello[] = "Hello World!"
 
 void helloWorld() {
+
     write hello
 }
+
 Result: Hello World
 
 Good luck :)
