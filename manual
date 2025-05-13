@@ -1,4 +1,6 @@
 Hello!
+For compiling to assembly your code you need to run emulator.c file using c compiler or emulator.exe. But it you want to run got assembly you can run yourself using nasm x86 assembly or directly run in file manager using "run" command.
+
 Variables: 
 For creating varible you need to declare : register dataType value
 Register can be named as register and number ( as example register1) or hexadecimal( 0x000A).
