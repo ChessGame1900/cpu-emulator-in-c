@@ -6,6 +6,7 @@ For compiling your code to assembly, you need to run emulator.c file using a C c
 In the manual file, the syntax is explained.
 
 Code:
+
 section .data
 
 char hello[] = "Hello World!"
