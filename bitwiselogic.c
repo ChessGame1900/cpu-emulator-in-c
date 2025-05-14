@@ -3,16 +3,17 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
-#include <sys/mman.h>
+ #include <sys/mman.h>
+#include <windows.h> 
  int registerInt[50];
  char registerChar [50][10];       
  char type[50][10];
- int r= atoi(word[1][lenght-2]);
+ int r= atoi(word[1][length-2]);
 int* arr[r];
-for (i = 0; i < r; i++)
+for (int i = 0; i < r; i++)
     arr[i] = (int*)malloc( 50* sizeof(int));
 char* arr1[r];
-for (i = 0; i < r; i++)
+for (int i = 0; i < r; i++)
     arr1[i] = (char*)malloc( 50* sizeof(char));
 
  int checkCondition(int a, const char* op, int b) {
@@ -28,7 +29,7 @@ for (i = 0; i < r; i++)
         if (strcmp(op, "/") == 0) return a / b;
         return 0;
     }
-int assemblyCondition(int a, const char* , int b, char *){
+int assemblyCondition(int a, const char*op  , int b, char **word){
     char loop[20];
          if (strcmp(op, "==") == 0) {
         fprintf(fptr1, "cmp dword ["%s"], ["%s"]", word[0], word[2]);
@@ -67,26 +68,26 @@ int assemblyCondition(int a, const char* , int b, char *){
          strcpy(loop, "lessOrEqual_");
         }
         if (strcmp(op, "+") == 0) {
-         fprintf(fptr1, "mov eax, "%s"", word[0]);
-        fprintf(fptr1, "mov ebx, "%s"", word[2]);
+         fprintf(fptr1, "mov eax, ["%s"]", word[0]);
+        fprintf(fptr1, "mov ebx, ["%s"]", word[2]);
          fprintf(fptr1, "add eax, ebx");
          fprintf(fptr1, "mov ["%s"], eax", word[4]);
         }
         if (strcmp(op, "-") == 0) {
-        fprintf(fptr1, "mov eax, "%s"", word[0]);
-        fprintf(fptr1, "mov ebx, "%s"", word[2]);
+        fprintf(fptr1, "mov eax, ["%s"]", word[0]);
+        fprintf(fptr1, "mov ebx, ["%s"]", word[2]);
          fprintf(fptr1, "add eax, ebx");
          fprintf(fptr1, "mov ["%s"], eax", word[4]);
         }
         if (strcmp(op, "*") == 0){
-        fprintf(fptr1, "mov eax, "%s"", word[0]);
+        fprintf(fptr1, "mov eax, ["%s"]", word[0]);
         fprintf(fptr1, "mov ebx, "%s"", word[2]);
          fprintf(fptr1, "imul eax, ebx");
          fprintf(fptr1, "mov ["%s"], eax", word[4]);
         }
         if (strcmp(op, "/") == 0) {
-        fprintf(fptr1, "mov eax, "%s"", word[0]);
-        fprintf(fptr1, "mov ebx, "%s"", word[2]);
+        fprintf(fptr1, "mov eax, ["%s"]", word[0]);
+        fprintf(fptr1, "mov ebx, ["%s"]", word[2]);
          fprintf(fptr1, "xor edx, edx");
          fprintf(fptr1, "idiv ebx");
           fprintf(fptr1, "idiv ebx");
@@ -99,23 +100,22 @@ void printResult(int result, int operation);
 void printDisplay(int result, int operation);
 int binary(char binaryString[]);
 int getRegisterValue();
-void variable(char *word[], int wordCount);
+void variable(char *word[]);
 void functions();
  
-int main(void) {
+int main(registerInt) {
     int operation;
-    struct registers A;
     int mode;
     printf("Please input 1 for using cpu emulator or 0 for file coding\n");
     scanf("%d", &mode);
     if (mode == 1) {
-        A.registerInt[1] = getRegisterValue();
-        A.registerInt[2]= getRegisterValue();
+        registerInt[1] = getRegisterValue();
+        registerInt[2]= getRegisterValue();
         printf("Enter operation:\n");
         printf("1=AND, 2=OR, 3=XOR, 4=NOR: \n");
         scanf("%d", &operation);
         if (operation >= 1 && operation <= 4) {
-            int result = performOperation(A, operation);
+            int result = performOperation(operation);
             printResult(result, operation);
             printDisplay(result, operation);
         } else {
@@ -142,7 +142,7 @@ int getRegisterValue() {
     return isBinary ? binary(input) : atoi(input);
 }
 
-int performOperation() {
+int performOperation(registerInt) {
     int result = 0;
     switch (operation) {
         case 1: result = registerInt[1] & registerInt[2]; break;
@@ -220,7 +220,7 @@ int binary(char binaryString[]) {
     }
     return decimalValue;
 }
-int str(int a1, char *word[]){
+int str(int a, char *word[]){
 int length = strlen(word[a]);
 int  a1 = atoi(&word[a][length - 1]);
 return a1;
@@ -232,7 +232,7 @@ void variable(char *word[]) {
     int data;
     int ba  = str(0, word);
     int condition = 0;
-    if(strcmp(word[0], "section") ==0 && strcmp(word[1],".data") ){
+    if(strcmp(word[0], "section") ==0 && strcmp(word[1],".data")==0 ){
         data =1;
     }
     if(strcmp(word[0], "void")==0 || strcmp(word[0],"int")==0   || strcmp(word[0],"char")==0){
@@ -246,16 +246,16 @@ void variable(char *word[]) {
         condition=0;
     }
     else if(strcmp(word[0], "}") ==0  && forCondition==1){
-         fprintf(fptr1, "jmp "%s" ",loop )
+         fprintf(fptr1, "jmp ["%s"] ",loop );
     }
-    else if(strcmp(word[i-1], "}")==0){
+    else if(strcmp(word[ba-1], "}")==0){
     condition=0;
 }
-  else if(strcmp(word[i-1], "}") ==0  && forCondition==1){
-         fprintf(fptr1, "jmp "%s" ",loop );
+  else if(strcmp(word[ba-1], "}") ==0  && forCondition==1){
+         fprintf(fptr1, "jmp ["%s" ]",loop );
     }
     if (strcmp(word[0], "int") == 0 && data==-1 ||  data==1  || condition==1  || condition=-1 ) {
-        registerInt[i] = atoi(word[2]);
+        registerInt[ba] = atoi(word[2]);
         fprintf(fptr1,"section .data");
         fprintf(fptr1, "%s dd  %d", word[1], word[2]);
         strcpy(type[ba],word[0]);
@@ -269,15 +269,16 @@ void variable(char *word[]) {
     if(strcmp(word[0],function)==0){
     
     }
-     if(strcmp(word[1][lenght-3],"["  ) ==0 && strcmp(word[1][lenght-1],"]"  ) ==0  && data==-1 ||  data==1 || condition==1  || condition=-1 ){
+     if(word[1][length-3] == "["    && word[1][length-1]== "]"  && data==-1 ||  data==1 || condition==1  || condition=-1 ){
         char name[50] = word[1];
         for(int b=0;b<4;b++){
             name[length-b]= '\0';
         }
-        int val = atoi(word[1][lenght-2]);
-        for( int bx= 0, bx<=val, bx++){
+        int val = atoi(word[1][length-2]);
+        for( int bx= 0; bx<=val; bx++){
         char value[val];
-       value = word[bx]+ ","; 
+        strcat(value, word[bx]);
+        strcat(value, ",");
         }
         if(strcmp(word[0],"int")==0) {
         fprintf("%s db %s", word[1], value);
@@ -288,10 +289,10 @@ void variable(char *word[]) {
     if (strcmp(word[0], "write") == 0 && condition==-1 ||  condition==1) {
         ba= str(1,word);
         if (strcmp(type[ba], "int") == 0) {
-            fprintf("mov eax, ["%s"]", registerInt[i]);
+            fprintf("mov eax, ["%s"]", registerInt[ba]);
             fprintf("call print");
         } else if (strcmp(type[ba], "char") == 0) {
-            fprintf("mov eax, ["%s"]", registerChar[i]);
+            fprintf("mov eax, ["%s"]", registerChar[ba]);
             fprintf("call print");
         }
     }
@@ -299,7 +300,7 @@ void variable(char *word[]) {
         ba=str(1,word);
         if(strcmp(word[ba], "int") == 0 ){
             fprintf("call read");
-            fprintf("mov  ["%s"], eax", registerInt[i]);
+            fprintf("mov  ["%s"], eax", registerInt[ba]);
             
         }
         else if(strcmp(word[1], "char") == 0 ){
@@ -335,7 +336,7 @@ if(strcmp(word[0],"return")==0){
      int returnInt[100];
      int b= 0;
      if(strcmp(word[1], "0")!=0  &&atoi(word[1])==0) {
-     returnInt[b]= registerInt[atoi(word[1][lenght-1])];
+     returnInt[b]= registerInt[atoi(word[1][length-1])];
      }
      else{
         returnInt[b]= atoi(word[1]);
@@ -347,27 +348,27 @@ if(strcmp(word[0],"return")==0){
      int b= 0;
      returnInt[b];
      b++;
-    if(atoi(word[1][lenght-1])<=0 && word[1][lenght-1] != "0"){
+    if(atoi(word[1][length-1])<=0 && word[1][length-1] != "0"){
     strcpy(returnChar, word[1]);
     }
     else{
-     returnChar[b]= registerChar[atoi(word[1][lenght-1])];
+     returnChar[b]= registerChar[atoi(word[1][length-1])];
     }
 }
 
-if(strcmp(word[i-1],"s")==0){
+if(strcmp(word[ba-1],"s")==0){
     char save[50][50];
-    for(int b1= 0, b<i-1, b1++){
+    for(int b1= 0, b<ba-1, b1++){
         save[b1] = save + word[b1];
     }
 }
-if(strcmp(word[0], "save")==0 && strcmp(word[0][lenght-1],"s" )==0){
-    variable(save[lenght-2]);
+if(strcmp(word[0], "save")==0 && strcmp(word[0][length-1],"s" )==0){
+    variable(save[length-2]);
 }
 }
 void functions() {
     char inputFile[250];
-    scanf("%s", &inputFile );
+    scanf("%s", inputFile );
     FILE *fptr = fopen(inputFile, "r");
     if (fptr == NULL) {
         printf("Error opening file\n");
@@ -418,10 +419,26 @@ void functions() {
         }
         lineCount++;
     }
+    free(word);
     fclose(fptr);
 }
 void executeAssembly(const char* assemblyCode) {
-    void* memory = mmap(NULL, strlen(assemblyCode), 
+    printf("Please write your's system name: windows or linux");
+    char system[7];
+    scanf("%s",&system );
+    if(strcmp(system,"windows")==0){
+    void* memory = VirtualAlloc(NULL, strlen(assemblyCode), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    if (memory == NULL) {
+        printf("Memory allocation failed\n");
+        return;
+    }
+    memcpy(memory, assemblyCode, strlen(assemblyCode));
+    void (*func)() = (void (*)())memory;
+    func();
+    VirtualFree(memory, 0, MEM_RELEASE);
+    }
+    else if(strcmp(system,"linux")==0 ){
+        void* memory = mmap(NULL, strlen(assemblyCode), 
                        PROT_READ | PROT_WRITE | PROT_EXEC,
                        MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     
@@ -430,17 +447,17 @@ void executeAssembly(const char* assemblyCode) {
         return;
     }
     memcpy(memory, assemblyCode, strlen(assemblyCode));
-    void (func)() = (void()())memory;
+    void (*func)() = (void(*)())memory;
     func();
     munmap(memory, strlen(assemblyCode));
-}
-
+    } 
+    }
 void files(){
     FILE *fptr ;
     printf("Hello! writing to blank file ,rewriting file or creating file you need to write: write path, for writing to file : writeA path,  for reading: read path, for printing file : print" );
     char abc[250];
     scanf("%s"&abc );
-    while(abc!= NULL){
+    while(abc[0] != '\0'){
         int b= 0;
         char *token = strtok(abc, " ");
         char worda[2][150];
@@ -463,8 +480,9 @@ void files(){
         char myString[150];
         while(fgets(myString, 100, fptr)) {
             printf("%s", myString);
+        }
     }
-    else if( strcmp(worda[0], "compile")==0){
+    else if( strcmp(worda[0], "run")==0){
         char myString[150];
         while(fgets(myString,100,fptr)){
          executeAssembly(assemblyCode);
