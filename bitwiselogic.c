@@ -3,18 +3,15 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
- #include <sys/mman.h>
-#include <windows.h> 
+#ifdef _WIN32
+#include <windows.h>
+#else 
+#include <sys/mman.h>
+#endif
+
  int registerInt[50];
  char registerChar [50][10];       
  char type[50][10];
- int r= atoi(word[1][length-2]);
-int* arr[r];
-for (int i = 0; i < r; i++)
-    arr[i] = (int*)malloc( 50* sizeof(int));
-char* arr1[r];
-for (int i = 0; i < r; i++)
-    arr1[i] = (char*)malloc( 50* sizeof(char));
 
  int checkCondition(int a, const char* op, int b) {
         if (strcmp(op, "==") == 0) return a == b;
@@ -32,66 +29,66 @@ for (int i = 0; i < r; i++)
 int assemblyCondition(int a, const char*op  , int b, char **word){
     char loop[20];
          if (strcmp(op, "==") == 0) {
-        fprintf(fptr1, "cmp dword ["%s"], ["%s"]", word[0], word[2]);
+        fprintf(fptr1, "cmp dword [%s], [%s]", word[0], word[2]);
         fprintf(fptr1, "je equal_");
         fprintf(fptr1, "equal_: ");
         strcpy(loop, "equal_");
          }
         if (strcmp(op, "!=") == 0){
-        fprintf(fptr1, "cmp dword ["%s"], ["%s"]", word[0], word[2]);
+        fprintf(fptr1, "cmp dword [%s], [%s]", word[0], word[2]);
         fprintf(fptr1, "jne notEqual_");
         fprintf(fptr1, "notEqual_: ");
          strcpy(loop, "notEqual_");
         }
         if (strcmp(op, ">") == 0){
-        fprintf(fptr1, "cmp dword ["%s"], ["%s"]", word[0], word[2]);
+        fprintf(fptr1, "cmp dword [%s], [%s]", word[0], word[2]);
         fprintf(fptr1, "jg greater_");
         fprintf(fptr1, "greater_: ");
         strcpy(loop, "greater_");
         }
         if (strcmp(op, "<") == 0) {
-        fprintf(fptr1, "cmp dword ["%s"], ["%s"]", word[0], word[2]);
+        fprintf(fptr1, "cmp dword [%s], [%s]", word[0], word[2]);
         fprintf(fptr1, "jl less_");
         fprintf(fptr1, "less_: ");
         strcpy(loop, "less_");
         }
         if (strcmp(op, ">=") == 0){
-        fprintf(fptr1, "cmp dword ["%s"], ["%s"]", word[0], word[2]);
+        fprintf(fptr1, "cmp dword [%s], [%s]", word[0], word[2]);
         fprintf(fptr1, "jge  greaterOrEqual_");
         fprintf(fptr1, "greaterOrEqual_: ");
         strcpy(loop, "greaterOrEqual_");
         }
         if (strcmp(op, "<=") == 0) {
-        fprintf(fptr1, "cmp dword ["%s"], ["%s"]", word[0], word[2]);
+        fprintf(fptr1, "cmp dword [%s], [%s]", word[0], word[2]);
         fprintf(fptr1, "jle lessOrEqual_");
         fprintf(fptr1, "less_: ");
          strcpy(loop, "lessOrEqual_");
         }
         if (strcmp(op, "+") == 0) {
-         fprintf(fptr1, "mov eax, ["%s"]", word[0]);
-        fprintf(fptr1, "mov ebx, ["%s"]", word[2]);
+         fprintf(fptr1, "mov eax, [%s]", word[0]);
+        fprintf(fptr1, "mov ebx, [%s]", word[2]);
          fprintf(fptr1, "add eax, ebx");
-         fprintf(fptr1, "mov ["%s"], eax", word[4]);
+         fprintf(fptr1, "mov [%s], eax", word[4]);
         }
         if (strcmp(op, "-") == 0) {
-        fprintf(fptr1, "mov eax, ["%s"]", word[0]);
-        fprintf(fptr1, "mov ebx, ["%s"]", word[2]);
+        fprintf(fptr1, "mov eax, [%s]", word[0]);
+        fprintf(fptr1, "mov ebx, [%s]", word[2]);
          fprintf(fptr1, "add eax, ebx");
-         fprintf(fptr1, "mov ["%s"], eax", word[4]);
+         fprintf(fptr1, "mov [%s], eax", word[4]);
         }
         if (strcmp(op, "*") == 0){
-        fprintf(fptr1, "mov eax, ["%s"]", word[0]);
-        fprintf(fptr1, "mov ebx, "%s"", word[2]);
+        fprintf(fptr1, "mov eax, [%s]", word[0]);
+        fprintf(fptr1, "mov ebx, [%s]", word[2]);
          fprintf(fptr1, "imul eax, ebx");
          fprintf(fptr1, "mov ["%s"], eax", word[4]);
         }
         if (strcmp(op, "/") == 0) {
-        fprintf(fptr1, "mov eax, ["%s"]", word[0]);
-        fprintf(fptr1, "mov ebx, ["%s"]", word[2]);
+        fprintf(fptr1, "mov eax, [%s]", word[0]);
+        fprintf(fptr1, "mov ebx, [%s]", word[2]);
          fprintf(fptr1, "xor edx, edx");
          fprintf(fptr1, "idiv ebx");
           fprintf(fptr1, "idiv ebx");
-          fprintf(fptr1, "mov ["%s"], eax", word[4]);
+          fprintf(fptr1, "mov [%s], eax", word[4]);
         }
         return 0;
 }
@@ -227,6 +224,9 @@ return a1;
 }
 
 void variable(char *word[]) {
+ r = atoi(word[1][length-2]);
+ int forCondition;
+
     FILE *fptr1;
     fptr1 =  fopen("filename.asm", "w");
     int data;
@@ -246,13 +246,13 @@ void variable(char *word[]) {
         condition=0;
     }
     else if(strcmp(word[0], "}") ==0  && forCondition==1){
-         fprintf(fptr1, "jmp ["%s"] ",loop );
+         fprintf(fptr1, "jmp [%s] ",loop );
     }
     else if(strcmp(word[ba-1], "}")==0){
     condition=0;
 }
   else if(strcmp(word[ba-1], "}") ==0  && forCondition==1){
-         fprintf(fptr1, "jmp ["%s" ]",loop );
+         fprintf(fptr1, "jmp [%s]",loop );
     }
     if (strcmp(word[0], "int") == 0 && data==-1 ||  data==1  || condition==1  || condition=-1 ) {
         registerInt[ba] = atoi(word[2]);
@@ -289,10 +289,10 @@ void variable(char *word[]) {
     if (strcmp(word[0], "write") == 0 && condition==-1 ||  condition==1) {
         ba= str(1,word);
         if (strcmp(type[ba], "int") == 0) {
-            fprintf("mov eax, ["%s"]", registerInt[ba]);
+            fprintf("mov eax, [%s]", registerInt[ba]);
             fprintf("call print");
         } else if (strcmp(type[ba], "char") == 0) {
-            fprintf("mov eax, ["%s"]", registerChar[ba]);
+            fprintf("mov eax, [%s]", registerChar[ba]);
             fprintf("call print");
         }
     }
@@ -300,12 +300,12 @@ void variable(char *word[]) {
         ba=str(1,word);
         if(strcmp(word[ba], "int") == 0 ){
             fprintf("call read");
-            fprintf("mov  ["%s"], eax", registerInt[ba]);
+            fprintf("mov  [%s], eax", registerInt[ba]);
             
         }
         else if(strcmp(word[1], "char") == 0 ){
              fprintf("call read");
-            fprintf("mov  ["%s"], eax", registerChar[i]);
+            fprintf("mov  [%s], eax", registerChar[i]);
          }
 }
     if(strcmp(word[3], "=") == 0  && condition==-1 ||  condition==1)  {
@@ -318,14 +318,14 @@ if(strcmp(word[0],"if")==0  && checkCondition(registerInt[reg1], word[2], regist
     condition=1;
 }
 if(strcmp(word[0],"for")==0){
-            int forCondition = 1;
+            forCondition = 1;
             assemblyCondition(registerInt[reg1], word[2], registerInt[reg2], word);
-            fprintf(fptr1, "dd "%s" "%d"", word[4], registerInt[str(4,word)]);
+            fprintf(fptr1, "dd %s %d", word[4], registerInt[str(4,word)]);
             if(strcmp(word[5],"-")==0){
-                fprintf(fptr1, "dec "%s" ", word[4]);
+                fprintf(fptr1, "dec %s ", word[4]);
             }
             else if(strcmp(word[5],"+")==0){
-             fprintf(fptr1, "inc "%s" ", word[4]);
+             fprintf(fptr1, "inc %s ", word[4]);
             }
             condition=1;       
 }
@@ -413,7 +413,8 @@ void functions() {
         variable(word);
         for (int j = 0; j < i; j++) {
             char  saved[50][100];
-            arr1[i] = (char*)malloc( 50* sizeof(char));
+            char arb[50];
+            char arb[i] = (char*)malloc( 50* sizeof(char));
             strncpy(saved[j][i], word);
             free(word[j]);
         }
@@ -480,6 +481,18 @@ void files(){
         char myString[150];
         while(fgets(myString, 100, fptr)) {
             printf("%s", myString);
+        }
+        else if(strcmp(worda[0],"writeText")==0){
+            char  *a  = strstr(abc, "writeText");
+            a= a+9;
+            whiile(*a==" "){
+                a++;
+            }
+            char  bx[241];
+            strncpy(bx, a, sizeof(bx) - 1);
+            a[sizeof(a) - 1] = '\0';
+            fprintf(fptr,a);
+
         }
     }
     else if( strcmp(worda[0], "run")==0){
