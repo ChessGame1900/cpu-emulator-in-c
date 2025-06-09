@@ -221,7 +221,7 @@ return a1;
 }
 
 void variable(char *word[], char *loop) {
- 
+ int ifCondition;
  int lenght= strlen(word[1]);
  int r = str(1,word);
  int forCondition;
@@ -230,48 +230,45 @@ void variable(char *word[], char *loop) {
     int data;
     int ba  = str(0, word);
     int condition = 0;
-    if(strcmp(word[0],"_start:")==0){
         fprintf(fptr1,"global _start");
-        fprintf(fptr1,"_start:");
-    }
-    if(strcmp(word[0], "section") ==0 && strcmp(word[1],".text")==0 ){
-          fprintf(fptr1,"section .text");
-    }
+        fprintf(fptr1,"_start:");           //   Assembly file start :)
+        fprintf(fptr1,"section .text");
 
-    if(strcmp(word[0], "section") ==0 && strcmp(word[1],".data")==0 ){
+    if(strcmp(word[0], "section") ==0 && strcmp(word[1],".data")==0 ){  // section .data for variables :)
         data =1;
     }
-    if(strcmp(word[0], "void")==0 || strcmp(word[0],"int")==0   || strcmp(word[0],"char")==0){
+    if(strcmp(word[0], "void")==0 || strcmp(word[0],"int")==0   || strcmp(word[0],"char")==0){ // function declaration(void, int, char)
     condition =1;
     char function[50] = "";
     char returnType[4];
     strcpy(function, word[2]);
     strcpy(returnType, word[0]);
     }
-  if(strcmp(word[0], "end") ==0  && forCondition==1){
+  if(strcmp(word[0], "end") ==0  && forCondition==1){ // end loop and jump back for assembly for loop :)
          fprintf(fptr1, "jmp [%s]",loop );
 }
-else if(strcmp(word[0], "end") ==0  && intCondition==1){
+else if(strcmp(word[0], "end") ==0  && ifCondition==1){ // end loop and jump from loop for assembly if loop :)
     fprintf(fptr1,"continue_:");
 }
-else if(strcmp(word[0], "end") ==0  && forCondition==0){
+else if(strcmp(word[0], "end") ==0  && forCondition==0){ // end function :)
             condition=0;
 }
 
-    if (strcmp(word[0], "int") == 0 && (data==-1 ||  data==1  || condition==1  || condition==-1) ) {
+    if (strcmp(word[0], "int") == 0 && (data==-1 ||  data==1  || condition==1  || condition==-1) ) { // int variable declaration :)
         registerInt[ba] = atoi(word[2]);
         fprintf(fptr1, "%s dd  %d", word[1], word[2]);
         strcpy(type[ba],word[0]);
     }
-    if (strcmp(word[0], "char") == 0 && (data==-1 ||  data==1 || condition==1  || condition==-1)) {
+    if (strcmp(word[0], "char") == 0 && (data==-1 ||  data==1 || condition==1  || condition==-1)) { // char variable declaration :)
         strcpy(registerChar[ba], word[2]);
          fprintf(fptr1,"section .data");
         fprintf(fptr1, "%s db  %s", word[1], word[2]);
         strcpy(type[ba],word[0]);
     }
  
-     if(word[1][lenght-3] == '['    && word[1][lenght-1]== ']' &&( data==-1 ||  data==1 || condition==1  || condition==-1 )){
-        char name[50] = word[1];
+     if(word[1][lenght-3] == '['    && word[1][lenght-1]== ']' &&( data==-1 ||  data==1 || condition==1  || condition==-1 )){ // int and char array declaration :)
+        char name[50] ;
+        strcpy(name, word[1]);
         for(int b=0;b<4;b++){
             name[lenght-b]= '\0';
         }
@@ -281,19 +278,19 @@ else if(strcmp(word[0], "end") ==0  && forCondition==0){
         strcat(value, word[bx]);
         strcat(value, ",");
         }
-        if(strcmp(word[0],"int")==0) {
+        if(strcmp(word[0],"int")==0) {  //  int aray declaration :)
         fprintf(fptr1,"%s db %s", word[1], value);
         }
         if(strcmp(word[0],"char")==0){
-        fprintf("%s dd %s", word[1], value);
+        fprintf(fptr1,"%s dd %s", word[1], value); // char array declaration  :)
         }
-    if (strcmp(word[0], "write") == 0 && (condition==-1 ||  condition==1)) {
+    if (strcmp(word[0], "write") == 0 && (condition==-1 ||  condition==1)) { // write function declaration :)
         ba= str(1,word);
-        if (strcmp(type[ba], "int") == 0) {
+        if (strcmp(type[ba], "int") == 0) { //  write function declaration for int variables :)
             fprintf(fptr1, "mov eax, [%d]", registerInt[ba]);
             fprintf(fptr1,"call print");
         } else if (strcmp(type[ba], "char") == 0) {
-            fprintf(fptr1,"mov eax, [%s]", registerChar[ba]);
+            fprintf(fptr1,"mov eax, [%s]", registerChar[ba]); // write function declaration for char variables :)
             fprintf(fptr1,"call print");
         }
     }
@@ -317,6 +314,7 @@ int reg2= str(3,word);
 if(strcmp(word[0],"if")==0  && checkCondition(registerInt[reg1], word[2], registerInt[reg2])){
     assemblyCondition(registerInt[reg1], word[2], registerInt[reg2],word, fptr1);
     condition=1;
+    ifCondition= 1;
 }
 if(strcmp(word[0],"for")==0){
             forCondition = 1;
