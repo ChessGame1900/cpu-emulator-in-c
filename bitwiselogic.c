@@ -221,7 +221,9 @@ return a1;
 }
 
 void variable(char *word[], char *loop) {
+ char returnType[4];
  int ifCondition;
+ char function[50] = "";
  int lenght= strlen(word[1]);
  int r = str(1,word);
  int forCondition;
@@ -239,8 +241,6 @@ void variable(char *word[], char *loop) {
     }
     if(strcmp(word[0], "void")==0 || strcmp(word[0],"int")==0   || strcmp(word[0],"char")==0){ // function declaration(void, int, char)
     condition =1;
-    char function[50] = "";
-    char returnType[4];
     strcpy(function, word[2]);
     strcpy(returnType, word[0]);
     }
@@ -254,12 +254,12 @@ else if(strcmp(word[0], "end") ==0  && forCondition==0){ // end function :)
             condition=0;
 }
 
-    if (strcmp(word[0], "int") == 0 && (data==-1 ||  data==1  || condition==1  || condition==-1) ) { // int variable declaration :)
+    if (strcmp(word[0], "int") == 0 && (data==-1 ||  data==1  || condition==1  || condition==-1) ) { // int variable declaration
         registerInt[ba] = atoi(word[2]);
         fprintf(fptr1, "%s dd  %d", word[1], word[2]);
         strcpy(type[ba],word[0]);
     }
-    if (strcmp(word[0], "char") == 0 && (data==-1 ||  data==1 || condition==1  || condition==-1)) { // char variable declaration :)
+    if (strcmp(word[0], "char") == 0 && (data==-1 ||  data==1 || condition==1  || condition==-1)) { // char variable declaration
         strcpy(registerChar[ba], word[2]);
          fprintf(fptr1,"section .data");
         fprintf(fptr1, "%s db  %s", word[1], word[2]);
@@ -273,6 +273,7 @@ else if(strcmp(word[0], "end") ==0  && forCondition==0){ // end function :)
             name[lenght-b]= '\0';
         }
         int val = atoi(word[1][lenght-2]);
+        char value[100] = "";
         for( int bx= 0; bx<=val; bx++){
         char *value = malloc(val + 1);
         strcat(value, word[bx]);
@@ -332,9 +333,9 @@ if(strcmp(word[0],"while")==0){
     assemblyCondition(registerInt[reg1], word[2], registerInt[reg2], word, fptr1);
      condition=1; 
 }
+int returnInt[100];
 if(strcmp(word[0],"return")==0){
     if(strcmp(returnType,"int")==0){
-     int returnInt[100];
      int b= 0;
      if(strcmp(word[1], "0")!=0  &&atoi(word[1])==0) {
      returnInt[b]= registerInt[atoi(word[1][lenght-1])];
@@ -344,39 +345,38 @@ if(strcmp(word[0],"return")==0){
      }
      b++;
     }
+    char returnChar[50][100];
     if(strcmp(returnType,"char")==0){
-     char returnChar[50][100];
      int b= 0;
      b++;
     if(atoi(word[1][lenght-1])<=0 && word[1][lenght-1] != "0"){
     strcpy(returnChar, word[1]);
     }
 }
-
+char save[50][50];
 if(strcmp(word[ba-1],"s")==0){
-    char save[50][50];
     for(int b1 = 0; b1 < ba-1; b1++){
-        save[b1] = save + word[b1];
+        strcat(save[b1], word[b1]);
     }
 }
 if(strcmp(word[0], "save")==0 && strcmp(word[0][lenght-1],"s" )==0){
-    variable(save[lenght-2]);
+    variable(save[lenght-2], loop);
 }
 if(strcmp(word[0],function)==0 && strcmp(word[0],"()"==0)){
   if(strcmp(returnType, "void")==0){
    fprintf(fptr1, "mov eax, %s", "void function can't return :( ");
     fprintf(fptr1, "call print");
-    variable(save);
+    variable(save,loop);
   }
   if (strcmp(returnType, "int ")==0){
      fprintf(fptr1, "mov eax, %d", returnInt);
     fprintf(fptr1, "call print");
-    variable(save);
+    variable(save,loop);
   }
     if (strcmp(returnType, "char ")==0){
-     fprintf(fptr1, "mov eax, %s", returnChar);
+    fprintf(fptr1, "mov eax, %s", returnChar);
     fprintf(fptr1, "call print");
-    variable(save,loop,fptr1);
+    variable(save,loop);
   }
 
 }fclose(fptr1);
