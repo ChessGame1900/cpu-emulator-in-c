@@ -30,7 +30,7 @@ For creating section for variables you need to declare: section .data
 
 Functions:
 
-For creating function you need to declare: returnType name
+For creating function you need to declare: returnType function name
 (returnType as dataType for variables)( name can be any char[] (string) )
 for return you need to declare: return value
 (value  can be integer or char variable, integer or char)
