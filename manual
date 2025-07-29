@@ -2,7 +2,7 @@ Hello!
 For compiling to assembly your code you need to run emulator.c file using c compiler or emulator.exe. But it you want to run got assembly you can run yourself using nasm x86 assembly or directly run in file manager using "run" command.
 
 Variables: 
-For creating varible you need to declare : name dataType value
+For creating varible you need to declare :  dataType  name value
 DataType can be int or char( later will be implemented more dataTypes)) ( value can be string or
 integer( later will be added more variants like true or false, imaginary numbers, numbers with floating point ext.))
 
